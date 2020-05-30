@@ -1,0 +1,9 @@
+{% extends "./index.html" %}
+{% block table %}
+<h1>{{ name }}</h1>
+    <ul>
+    {% for i in r%}
+        <li> {{ i }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
