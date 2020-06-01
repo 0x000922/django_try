@@ -1,13 +1,18 @@
 from django.shortcuts import render
 from django.db import connection
-from django.http import HttpResponse
+from django.http import HttpResponse , HttpResponseRedirect
 from django.template import loader
+from .models import Films, Bookings
+from .forms import Booking_id, CustomerForm
 #from django
 # Create your views here.
 
 
-def customer_forms(request):
-    pass
+def index(request):
+    template = loader.get_template('main/indexpage.html')
+    context = {}
+    return HttpResponse(template.render(context,request))
+
 
 def custom_sql_db_display(request, name):
     '''
@@ -32,7 +37,41 @@ def custom_sql_db_display(request, name):
     return HttpResponse(template.render(context,request))
     
 
-def custom_fetch(request, name, id):
+def all_films(request):
+    return custom_sql_db_display(request, "films")
+
+
+def booking_id_search(request):
+    sub = False
+    if request.method == 'POST':
+        form = Booking_id(request.POST)
+        sub = True
+        if form.is_valid():
+            r = form.cleaned_data['Booking_id']
+            book = Bookings.objects.get(id = r)
+            reseverd = book.reserved_seat_set.all()
+            customer = book.customers
+            '''
+            sql = "select * from main_reserved_seat as c, main_bookings as b where c.booking_id = b.id and b.id={}".format(r.id)
+            with connection.cursor() as cur:
+                try:
+                    cur.execute(sql)
+                    r = list(cur.fetchall())
+                except:
+                    return HttpResponse("model does not exist")
+            '''
+            context = {
+                'customer' : customer,
+                'seats': reseverd,
+                'submit': sub,
+                'book': book
+            }
+            return HttpResponse(render(request,'main/bookingidForm.html', context ))
+    
+    else:
+        form = Booking_id()
+    
+    return render(request, 'main/bookingidForm.html', {'form' : form, 'submit': sub})
+    
+def customerform(request):
     pass
-
-

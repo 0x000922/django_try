@@ -1,9 +1,11 @@
 {% extends "./index.html" %}
 {% block table %}
+<div class = "container">
 <h1>{{ name }}</h1>
     <ul>
-    {% for i in r%}
+    {% for i in r %}
         <li> {{ i }}</li>
     {% endfor %}
     </ul>
+</div>
 {% endblock %}

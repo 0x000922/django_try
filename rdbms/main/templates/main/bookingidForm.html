@@ -1,0 +1,64 @@
+{% extends "./index.html" %}
+{% block table %}
+{% if submit %}
+<h1 class="display-5">Booking info</h1>
+<div class = "container">
+<table class = "table table-bordered">
+    <thead>
+        <tr>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Seat number</th>
+          <th scope="col">Film</th>
+        </tr>
+      </thead>
+    <tbody>
+       {% for i in seats %}
+       <tr>
+       <td>{{ customer.first_name }}</td>
+       <td>{{ customer.last_name }}</td>
+       <td>{{ i.seat.id }}</td>
+       <td>{{ book.screening.film.name }}</td>
+       </tr>
+       {% endfor %}
+    </tbody>
+</div>
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+{% else %}
+<section id="cover" class="min-vh-90">
+    <div id="cover-caption">
+        <div class="container">
+            <div class="row text-black">
+                <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11 mx-auto text-center form p-4">
+                    <h1 class="display-5">Booking search</h1>
+                    <div class="px-2">
+                        <form action = "{% url 'booking_id_search' %}" method="POST" class = "justify-content-center">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            <div class="form-group">
+                                <label for = "{{ form.booking_id.id_for_label }}">Booking ID</label>
+                                {{ form.Booking_id }}
+                            </div>
+                           
+                            <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

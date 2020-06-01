@@ -1,0 +1,21 @@
+{% extends "./index.html %}
+{% block table %}
+<div class = "container">
+<h1> 
+Things u can do |!!|
+</h1>
+<ul>
+    <li>
+        <a href = "{% url 'all_films' %}"> Films in database</a>
+    </li>
+    <li>
+        <a href = "{% url 'booking_id_search' %}">booking id search</a>
+    </li>
+    <li>
+        customer form and registration
+    </li>
+</ul>
+</div>
+
+
+{% endblock %}
