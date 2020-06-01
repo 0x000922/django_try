@@ -1,0 +1,26 @@
+{% extends "./index.html" %}
+{% block table %}
+
+
+
+
+<section id="cover" class="min-vh-90">
+    <div id="cover-caption">
+        <div class="container">
+            <div class="row text-black">
+                <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11 mx-auto text-center form p-4">
+                    <h1 class="display-5">User registration form</h1>
+                    <div class="px-2">
+                        <form action="{% url 'reg' %}" method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

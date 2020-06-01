@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db import connection
 from django.http import HttpResponse , HttpResponseRedirect
 from django.template import loader
-from .models import Films, Bookings
+from .models import Films, Bookings, Customers
 from .forms import Booking_id, CustomerForm
 #from django
 # Create your views here.
@@ -77,7 +77,13 @@ def customerform(request):
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
-            form.save()
+            a = form.cleaned_data['first_name']
+            b = form.cleaned_data['last_name']
+            c = form.cleaned_data['email']
+            o = Customers(first_name = a, last_name = b, email = c)
+            o.save()
+            return HttpResponseRedirect('/main')
+        
     else:
         form = CustomerForm()
-    return render(request, 'main/', {'form': form})
+    return render(request, 'main/customerform.html', {'form': form})
