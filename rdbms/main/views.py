@@ -74,4 +74,10 @@ def booking_id_search(request):
     return render(request, 'main/bookingidForm.html', {'form' : form, 'submit': sub})
     
 def customerform(request):
-    pass
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = CustomerForm()
+    return render(request, 'main/', {'form': form})
