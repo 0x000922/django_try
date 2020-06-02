@@ -9,8 +9,8 @@ class Films(models.Model):
 '''
 CREATE TABLE main_films (
     "id" serial NOT NULL PRIMARY KEY,
-    "first_name" varchar(30) NOT NULL,
-    "last_name" varchar(30) NOT NULL
+    "name" varchar(45) NOT NULL,
+    "length_min" integer NOT NULL
 );
 '''
 class Customers(models.Model):
