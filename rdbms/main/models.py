@@ -6,7 +6,11 @@ class Films(models.Model):
     id = models.AutoField(primary_key = True) # an auto)increment feild as a primary key
     name = models.CharField(max_length = 45,null = False)# automaticaly assigns a not null value
     length_min = models.IntegerField(null = False)
+'''
 
+
+
+'''
 class Customers(models.Model):
     #id = models.AutoField(primary_key = True) django automatically assigns id feild as primary key if not specified
     first_name = models.CharField(max_length = 45,null = True)
