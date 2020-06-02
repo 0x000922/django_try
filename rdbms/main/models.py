@@ -7,9 +7,11 @@ class Films(models.Model):
     name = models.CharField(max_length = 45,null = False)# automaticaly assigns a not null value
     length_min = models.IntegerField(null = False)
 '''
-
-
-
+CREATE TABLE main_films (
+    "id" serial NOT NULL PRIMARY KEY,
+    "first_name" varchar(30) NOT NULL,
+    "last_name" varchar(30) NOT NULL
+);
 '''
 class Customers(models.Model):
     #id = models.AutoField(primary_key = True) django automatically assigns id feild as primary key if not specified
