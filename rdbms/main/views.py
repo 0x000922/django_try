@@ -11,16 +11,14 @@ from django.views import View
 """
     function view start
 """
-def index(request):
-    template = loader.get_template('main/indexpage.html')
-    context = {}
-    return HttpResponse(template.render(context,request))
+
 
 
 def custom_sql_db_display(request, name):
     '''
     this query can return all the tables in RDBMS_project database
     using raw sql and django connections 
+    DONOT USE THIS JUST FOR DEMONSTRATION 
     '''    
     
     with connection.cursor() as cursor:
@@ -44,52 +42,7 @@ def all_films(request):
     return custom_sql_db_display(request, "films")
 
 
-def booking_id_search(request):
-    sub = False
-    if request.method == 'POST':
-        form = Booking_id(request.POST)
-        sub = True
-        if form.is_valid():
-            r = form.cleaned_data['Booking_id']
-            book = Bookings.objects.get(id = r)
-            reseverd = book.reserved_seat_set.all()
-            customer = book.customers
-            '''
-            sql = "select * from main_reserved_seat as c, main_bookings as b where c.booking_id = b.id and b.id={}".format(r.id)
-            with connection.cursor() as cur:
-                try:
-                    cur.execute(sql)
-                    r = list(cur.fetchall())
-                except:
-                    return HttpResponse("model does not exist")
-            '''
-            context = {
-                'customer' : customer,
-                'seats': reseverd,
-                'submit': sub,
-                'book': book
-            }
-            return HttpResponse(render(request,'main/bookingidForm.html', context ))
-    
-    else:
-        form = Booking_id()
-    
-    return render(request, 'main/bookingidForm.html', {'form' : form, 'submit': sub})
-    
-def customerform(request):
-    if request.method == 'POST':
-        form = CustomerForm(request.POST)
-        if form.is_valid():
-            a = form.cleaned_data['first_name']
-            b = form.cleaned_data['last_name']
-            c = form.cleaned_data['email']
-            o = Customers(first_name = a, last_name = b, email = c)
-            o.save()
-            return HttpResponseRedirect('/')
-        
-    else:
-        form = CustomerForm()
-    return render(request, 'main/customerform.html', {'form': form})
+
 
 """
 function view end
@@ -105,11 +58,11 @@ class CustomerFormView(View):
     form_class = CustomerForm
     template_name = 'main/customerform.html'
 
-    def get(self,request, *args, **kwargs):
+    def get(self,request):
         form = self.form_class()
         return render(request, self.template_name, {'form':form})
 
-    def post(self,request, *args, **kwargs):
+    def post(self,request):
         form = self.form_class(request.POST)
         if form.is_valid():
             a = form.cleaned_data['first_name']
@@ -119,3 +72,30 @@ class CustomerFormView(View):
             o.save()
             return HttpResponseRedirect('/')
         return render(request, self.template_name, {'form':form})
+
+class BookingIDSearchView(View):
+    form_class = Booking_id
+    template_name = 'main/bookingidForm.html'
+    sub = False
+    
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, 'main/bookingidForm.html', {'form' : form, 'submit': self.sub})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class()
+        if request.method == 'POST':
+            form = Booking_id(request.POST)
+            self.sub = True
+            if form.is_valid():
+                r = form.cleaned_data['Booking_id']
+                book = Bookings.objects.get(id = r)
+                reseverd = book.reserved_seat_set.all()
+                customer = book.customers
+                context = {
+                        'customer' : customer,
+                        'seats': reseverd,
+                        'submit': self.sub,
+                        'book': book
+                    }
+        return render(request, 'main/bookingidForm.html',context)
