@@ -4,10 +4,13 @@ from django.http import HttpResponse , HttpResponseRedirect
 from django.template import loader
 from .models import Films, Bookings, Customers
 from .forms import Booking_id, CustomerForm
+from django.views import View
 #from django
 # Create your views here.
 
-
+"""
+    function view start
+"""
 def index(request):
     template = loader.get_template('main/indexpage.html')
     context = {}
@@ -82,8 +85,37 @@ def customerform(request):
             c = form.cleaned_data['email']
             o = Customers(first_name = a, last_name = b, email = c)
             o.save()
-            return HttpResponseRedirect('/main')
+            return HttpResponseRedirect('/')
         
     else:
         form = CustomerForm()
     return render(request, 'main/customerform.html', {'form': form})
+
+"""
+function view end
+"""
+"""
+class based view
+"""
+class IndexView(View):
+    def get(self,request):
+        return render(request, 'main/indexpage.html')
+
+class CustomerFormView(View):
+    form_class = CustomerForm
+    template_name = 'main/customerform.html'
+
+    def get(self,request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form':form})
+
+    def post(self,request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            a = form.cleaned_data['first_name']
+            b = form.cleaned_data['last_name']
+            c = form.cleaned_data['email']
+            o = Customers(first_name = a, last_name = b, email = c)
+            o.save()
+            return HttpResponseRedirect('/')
+        return render(request, self.template_name, {'form':form})
