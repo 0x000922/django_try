@@ -1,10 +1,16 @@
 from django.shortcuts import render
 from django.db import connection
-from django.http import HttpResponse , HttpResponseRedirect
+from django.http import HttpResponse , HttpResponseRedirect, JsonResponse
 from django.template import loader
 from .models import Films, Bookings, Customers
 from .forms import Booking_id, CustomerForm
 from django.views import View
+from rest_framework.parsers import JSONParser
+from .serializers import FilmsSerializer
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.views import APIView
+from rest_framework.response import Response
 #from django
 # Create your views here.
 
@@ -99,3 +105,18 @@ class BookingIDSearchView(View):
                         'book': book
                     }
         return render(request, 'main/bookingidForm.html',context)
+
+class FilmsView(APIView):
+    def get(self, request, *args, **kwargs):
+        films = Films.objects.get(id=kwargs['pk'])
+        serializer = FilmsSerializer(films, many=False)
+        return JsonResponse(serializer.data, safe=False)
+    
+    @method_decorator(csrf_exempt)
+    def post(self, request, *args, **kwargs):
+        data = JSONParser().parse(request)
+        serializer = FilmsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
